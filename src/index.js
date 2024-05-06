@@ -1,4 +1,4 @@
-const { sorter, select, AdapterService } = require('@feathersjs/adapter-commons');
+const { sorter, select, AdapterBase } = require('@feathersjs/adapter-commons');
 const { _ } = require('@feathersjs/commons');
 const errors = require('@feathersjs/errors');
 const LocalForage = require('localforage');
@@ -22,8 +22,8 @@ const validDrivers = {
 };
 
 
-// Create the service.
-class Service extends AdapterService {
+// Create the adapter
+class Adapter extends AdapterBase {
   constructor(options = {}) {
     super(_.extend({
       id: 'id',
@@ -111,14 +111,22 @@ class Service extends AdapterService {
 
   async getEntries(params = {}) {
     debug(`getEntries(${JSON.stringify(params)})` + this._debugSuffix);
-    const { query } = this.filterQuery(params);
-
-    return this._find(Object.assign({}, params, {
-      paginate: false,
-      query
-    }))
+    
+    return this._find({
+      ...params,
+      paginate: false
+    })
       .then(select(params, this.id))
       .then(stringsToDates(this._dates));
+  }
+
+  getQuery(params) {
+    const { $skip, $sort, $limit, $select, ...query } = params.query || {};
+
+    return {
+      query,
+      filters: { $skip, $sort, $limit, $select }
+    };
   }
 
   setMax(id) {
@@ -133,7 +141,7 @@ class Service extends AdapterService {
   async _find(params = {}) {
     debug(`_find(${JSON.stringify(params)})` + this._debugSuffix);
     const self = this;
-    const { query, filters, paginate } = self.filterQuery(params);
+    const { query, filters, paginate } = self.getQuery(params);
     let keys = await self.getModel().keys();
 
     // An async equivalent of Array.filter()
@@ -191,7 +199,7 @@ class Service extends AdapterService {
   async _get(id, params = {}) {
     debug(`_get(${id}, ${JSON.stringify(params)})` + this._debugSuffix);
     const self = this;
-    const { query } = this.filterQuery(params);
+    const { query } = this.getQuery(params);
 
     return this.getModel().getItem(String(id), null)
       .catch(err => { throw new errors.NotFound(`No record found for ${this.id} '${id}', err=${err.name} ${err.message}` + this._debugSuffix); })
@@ -304,6 +312,37 @@ class Service extends AdapterService {
   }
 }
 
+// Create the service.
+class Service extends Adapter {
+  constructor(options = {}) {
+    super(options);
+  }
+
+  // Perform requests to adapter
+  async find (params) {
+    return this._find(params)
+  }
+
+  async get (id, params) {
+    return this._get(id, params)
+  }
+
+  async create (data, params) {
+    return this._create(data, params)
+  }
+
+  async update (id, data, params) {
+    return this._update(id, data, params)
+  }
+
+  async patch (id, data, params) {
+    return this._patch(id, data, params)
+  }
+
+  async remove (id, params) {
+    return this._remove(id, params)
+  }
+}
 function init(options) {
   return new Service(options);
 };
