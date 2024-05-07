@@ -1,4 +1,4 @@
-const { sorter, select, AdapterBase } = require('@feathersjs/adapter-commons');
+const { sorter, select, getLimit, AdapterBase } = require('@feathersjs/adapter-commons');
 const { _ } = require('@feathersjs/commons');
 const errors = require('@feathersjs/errors');
 const LocalForage = require('localforage');
@@ -9,8 +9,8 @@ const debug = require('debug')('@feathersjs-offline:feathers-localforage');
 
 const usedKeys = [];
 
-const _select = (data, ...args) => {
-  const base = select(...args);
+const _select = (data, params, ...args) => {
+  const base = select(params, ...args);
 
   return base(JSON.parse(JSON.stringify(data)));
 };
@@ -121,11 +121,12 @@ class Adapter extends AdapterBase {
   }
 
   getQuery(params) {
+    const options = this.getOptions(params);
     const { $skip, $sort, $limit, $select, ...query } = params.query || {};
-
+    
     return {
       query,
-      filters: { $skip, $sort, $limit, $select }
+      filters: { $skip, $sort, $limit: getLimit($limit, options.paginate), $select }
     };
   }
 
@@ -141,7 +142,8 @@ class Adapter extends AdapterBase {
   async _find(params = {}) {
     debug(`_find(${JSON.stringify(params)})` + this._debugSuffix);
     const self = this;
-    const { query, filters, paginate } = self.getQuery(params);
+    const { paginate } = this.getOptions(params)
+    const { query, filters } = self.getQuery(params);
     let keys = await self.getModel().keys();
 
     // An async equivalent of Array.filter()
@@ -161,7 +163,7 @@ class Adapter extends AdapterBase {
     // Now retrieve all values
     let values = await Promise.all(keys.map(key => self.getModel().getItem(key)));
     const total = values.length;
-
+    
     // Now we sort (if requested)
     if (filters.$sort !== undefined) {
       values.sort(this.options.sorter(filters.$sort));
@@ -184,7 +186,7 @@ class Adapter extends AdapterBase {
       total,
       limit: filters.$limit,
       skip: filters.$skip || 0,
-      data: values.map(value => _select(value, params))
+      data: values.map(value => _select(value, params, this.id))
     };
 
     if (!(paginate && paginate.default)) {
@@ -229,6 +231,9 @@ class Adapter extends AdapterBase {
   }
 
   async _create(raw, params = {}) {
+    if (Array.isArray(raw) && !this.allowsMulti('create', params)) {
+      throw new errors.MethodNotAllowed('Can not create multiple entries')
+    }
     debug(`_create(${JSON.stringify(raw)}, ${JSON.stringify(params)})` + this._debugSuffix);
     const self = this;
 
@@ -258,6 +263,9 @@ class Adapter extends AdapterBase {
   }
 
   async _patch(id, data, params = {}) {
+    if (id === null && !this.allowsMulti('patch', params)) {
+      throw new errors.MethodNotAllowed('Can not patch multiple entries')
+    }
     debug(`_patch(${id}, ${JSON.stringify(data)}, ${JSON.stringify(params)})` + this._debugSuffix);
     const self = this;
     const items = await this._findOrGet(id, params);
@@ -279,6 +287,9 @@ class Adapter extends AdapterBase {
   }
 
   async _update(id, data, params = {}) {
+    if (id === null || Array.isArray(data)) {
+      throw new errors.BadRequest("You can not replace multiple instances. Did you mean 'patch'?")
+    }
     debug(`_update(${id}, ${JSON.stringify(data)}, ${JSON.stringify(params)})` + this._debugSuffix);
     const item = await this._findOrGet(id, params);
     id = item[this.id];
@@ -299,6 +310,9 @@ class Adapter extends AdapterBase {
   }
 
   async _remove(id, params = {}) {
+    if (id === null && !this.allowsMulti('remove', params)) {
+      throw new errors.MethodNotAllowed('Can not remove multiple entries')
+    }
     debug(`_remove(${id}, ${JSON.stringify(params)})` + this._debugSuffix);
     const items = await this._findOrGet(id, params);
     const self = this;
