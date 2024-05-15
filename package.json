@@ -1,5 +1,5 @@
 {
-  "name": "@kalisio/localforage",
+  "name": "@kalisio/feathers-localforage",
   "version": "1.1.5",
   "description": "A FeathersJS client side service based on localforage that persists to IndexedDB, WebSQL, or LocalStorage",
   "keywords": [
@@ -20,15 +20,14 @@
   },
   "homepage": "https://github.com/feathersjs-offline/localforage",
   "license": "MIT",
-  "main": "lib/index.js",
-  "types": "lib/",
+  "main": "src/index.js",
+  "types": "src/",
   "directories": {
-    "lib": "lib",
+    "src": "src",
     "test": "test"
   },
   "files": [
-    "lib",
-    "dist"
+    "src"
   ],
   "publishConfig": {
     "access": "public"
