@@ -39,13 +39,14 @@ class Adapter extends AdapterBase {
     debug(`Constructor started:
 \t_storageType = ${JSON.stringify(this._storageType)}
 \t_version = ${JSON.stringify(this._version)}
+\t_name = ${JSON.stringify(this._name)}
 \t_storageKey = ${JSON.stringify(this._storageKey)}
 \t_storageSize = ${JSON.stringify(this._storageSize)}
 \t_reuseKeys = ${JSON.stringify(this._reuseKeys)}\n`);
 
     this._storage = LocalForage.createInstance({
       driver: this._storageType,
-      name: 'feathersjs-offline',
+      name: this._name,
       size: this._storageSize,
       version: this._version,
       storeName: this._storageKey,
@@ -56,14 +57,15 @@ class Adapter extends AdapterBase {
 
     // Make a handy suffix primarily for debugging owndata/ownnet
     const self = this;
-    this._debugSuffix = self._storageKey.includes('_local') ? '  LOCAL' :
-      (self._storageKey.includes('_queue') ? '  QUEUE' : '');
+    this._debugSuffix = self._name.includes('_local') ? '  LOCAL' :
+      (self._name.includes('_queue') ? '  QUEUE' : '');
 
     this.ready();
   }
 
   sanitizeParameters(options) {
-    this._storageKey = options.name || 'feathers';
+    this._name = options.name || 'feathers'
+    this._storageKey = options.storeName || 'feathersjs-offline';
 
     let storage = this.options.storage || 'LOCALSTORAGE';
     storage = Array.isArray(storage) ? storage : [storage];
