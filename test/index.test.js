@@ -79,9 +79,9 @@ const testSuite = adapterTests([
 describe('Feathers LocalForage Service', () => {
   const events = ['testing'];
   const app = feathers()
-    .use('/people', service({ events, name: 'test-storage-1', date: false }))
+    .use('/people', service({ events, name: 'test-service-1', storeName: 'test-storage-1', date: false }))
     .use('/people-customid', service({
-      id: 'customid', events, name: 'test-storage-2', date: false
+      id: 'customid', events, name: 'test-service-2', storeName: 'test-storage-2', date: false
     }));
 
   describe('Specific adapter tests', () => {
@@ -97,23 +97,25 @@ describe('Feathers LocalForage Service', () => {
       });
 
       it('throws on name reuse', done => {
-        const name = 'test-storage-5';
+        const name = 'test-service-5';
+        const storeName = 'test-storage-5';
 
         assert.throws(() => {
-          app.use('service1', service({ name }));
-          app.use('service2', service({ name }));
+          app.use('service1', service({ name, storeName }));
+          app.use('service2', service({ name, storeName }));
         });
 
         done();
       });
 
       it('accepts name reuse with reuseKeys option set', done => {
-        const name = 'test-storage-6';
+        const name = 'test-service-6';
+        const storeName = 'test-storage-6';
 
         let flag = true;
         try {
-          app.use('service1', service({ name }));
-          app.use('service2', service({ name, reuseKeys: true }));
+          app.use('service1', service({ name, storeName }));
+          app.use('service2', service({ name, storeName, reuseKeys: true }));
         } catch (err) {
           flag = false;
         }
@@ -123,12 +125,13 @@ describe('Feathers LocalForage Service', () => {
       });
 
       it('accepts name reuse with reuseKeys option set + contents', async () => {
-        const name = 'test-storage-7';
+        const name = 'test-service-7';
+        const storeName = 'test-storage-7';
 
         let flag = null;
-        app.use('service3', service({ name }));
+        app.use('service3', service({ name, storeName }));
         app.service('service3').create({ name: 'Bond', age: 58 })
-          .then(() => app.use('service4', service({ name, reuseKeys: true })))
+          .then(() => app.use('service4', service({ name, storeName, reuseKeys: true })))
           .then(() => flag = true)
           .then(() => {
             assert.strictEqual(flag, true, `Reuse with flag + contents failed.`);

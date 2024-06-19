@@ -37,7 +37,8 @@ __Options:__
 - `version` (*optional*, default: `1.0`) - `localforage` driver version to use. Currently only `1.0` exists.
 - `size` (*optional*, default `4980736`) - The maximum database size required. Default DB size is _JUST UNDER_ 5MB, as it's the highest size we can use without a prompt in any browser.
 - `id` (*optional*, default: `'id'`) - The name of the id field property.
-- `name` (*optional*, default: `'feathers'`) - The key to store data under in local or async storage.
+- `name` (*optional*, default: `'feathersjs-offline'`) - The name of the underlying localforage database. With local storage, this is used as a key prefix.
+- `storeName` (*optional*, default: `'feathers'`) - The name of the datastore. Depending on the storage backend it could be the name of the key/value table in the database (eg WebSQL) or the key (eg local storage). Must be alphanumeric, with underscores. 
 - `store` (*optional*) - An object with id to item assignments to pre-initialize the data store.
 - `dates` (*optional*, default `false`) - Convert ISO-formatted date strings to `Date` objects in result sets.
 - `events` (*optional*) - A list of [custom service events](https://docs.feathersjs.com/api/events.html#custom-events) sent by this service.

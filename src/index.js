@@ -64,8 +64,8 @@ class Adapter extends AdapterBase {
   }
 
   sanitizeParameters(options) {
-    this._name = options.name || 'feathers'
-    this._storageKey = options.storeName || 'feathersjs-offline';
+    this._name = options.name || 'feathersjs-offline'
+    this._storageKey = options.storeName || options.name || 'feathers';
 
     let storage = this.options.storage || 'LOCALSTORAGE';
     storage = Array.isArray(storage) ? storage : [storage];
