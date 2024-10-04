@@ -272,6 +272,14 @@ class Adapter extends AdapterBase {
     const self = this;
     const items = await this._findOrGet(id, params);
 
+    if (params.upsert) {
+      if (Array.isArray(items) && (items.length === 0)) {
+        return self._create(data);
+      } else if (!items) {
+        return self._create(data);
+      }
+    }
+
     const patchEntry = async entry => {
       const currentId = entry[this.id];
 
@@ -294,6 +302,15 @@ class Adapter extends AdapterBase {
     }
     debug(`_update(${id}, ${JSON.stringify(data)}, ${JSON.stringify(params)})` + this._debugSuffix);
     const item = await this._findOrGet(id, params);
+
+    if (params.upsert) {
+      if (Array.isArray(item) && (item.length === 0)) {
+        return self._create(data);
+      } else if (!item) {
+        return self._create(data);
+      }
+    }
+
     id = item[this.id];
 
     const entry = _.omit(data, this.id);
