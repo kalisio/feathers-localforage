@@ -250,9 +250,9 @@ class Adapter extends AdapterBase {
     const data = Array.isArray(raw) ? raw.map(item => addId(Object.assign({}, item))) : addId(Object.assign({}, raw));
     // We default to automatically add ID to items without but this can be skipped
     const addItemId = (!params.hasOwnProperty('addId') || params.addId)
-    const doOne = async (item, indexOrData) => {
+    const doOne = (item, indexOrData) => {
       // Check if initial data had an ID or not
-      const originalItem = (typeof indexOrData === 'object' ? indexOrData : data[indexOrData])
+      const originalItem = (typeof indexOrData === 'object' ? indexOrData : raw[indexOrData])
       const hadId = (originalItem[this.id] !== undefined)
       return this.getModel().setItem(String(item[this.id]), addItemId || hadId ? item : _.omit(item, [this.id]), null)
         .then(() => addItemId || hadId ? item : _.omit(item, [this.id]))

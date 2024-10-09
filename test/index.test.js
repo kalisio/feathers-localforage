@@ -217,6 +217,10 @@ describe('Feathers LocalForage Service', () => {
         assert.strictEqual(result.id, data.id, 'Strange difference on "id"');
         assert.strictEqual(result.name, data.name, 'Strange difference on "name"');
         assert.strictEqual(result.age, data.age, 'Strange difference on "age"');
+        result = await myService.get('1');
+        assert.strictEqual(result.id, data.id, 'Strange difference on "id"');
+        assert.strictEqual(result.name, data.name, 'Strange difference on "name"');
+        assert.strictEqual(result.age, data.age, 'Strange difference on "age"');
         result = await myService.remove('1', {});
 
         data = { id: '123', name: 'David', age: 32 };
@@ -226,6 +230,10 @@ describe('Feathers LocalForage Service', () => {
         } catch (err) {
           assert.strictEqual(false, true, `Error creating item with id set. err=${err.name}, ${err.message}`);
         }
+        assert.strictEqual(result.id, data.id, 'Strange difference on "id"');
+        assert.strictEqual(result.name, data.name, 'Strange difference on "name"');
+        assert.strictEqual(result.age, data.age, 'Strange difference on "age"');
+        result = await myService.get(data.id);
         assert.strictEqual(result.id, data.id, 'Strange difference on "id"');
         assert.strictEqual(result.name, data.name, 'Strange difference on "name"');
         assert.strictEqual(result.age, data.age, 'Strange difference on "age"');
