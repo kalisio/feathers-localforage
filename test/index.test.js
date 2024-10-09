@@ -207,7 +207,7 @@ describe('Feathers LocalForage Service', () => {
         app.use('service7', service({ name }));
         const myService = app.service('service7');
 
-        const data = { name: 'David', age: 32 };
+        let data = { name: 'David', age: 32 };
         let result = {};
         try {
           result = await myService.create(data, { addId: false });
@@ -218,6 +218,18 @@ describe('Feathers LocalForage Service', () => {
         assert.strictEqual(result.name, data.name, 'Strange difference on "name"');
         assert.strictEqual(result.age, data.age, 'Strange difference on "age"');
         result = await myService.remove('1', {});
+
+        data = { id: '123', name: 'David', age: 32 };
+        result = {};
+        try {
+          result = await myService.create(data, { addId: false });
+        } catch (err) {
+          assert.strictEqual(false, true, `Error creating item with id set. err=${err.name}, ${err.message}`);
+        }
+        assert.strictEqual(result.id, data.id, 'Strange difference on "id"');
+        assert.strictEqual(result.name, data.name, 'Strange difference on "name"');
+        assert.strictEqual(result.age, data.age, 'Strange difference on "age"');
+        result = await myService.remove(data.id, {});
       });
     });
 

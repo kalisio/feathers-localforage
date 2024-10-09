@@ -246,12 +246,16 @@ class Adapter extends AdapterBase {
       
       return item;
     };
-    const data = Array.isArray(raw) ? raw.map(addId) : addId(Object.assign({}, raw));
+    // Duplicate with generated IDs so that we can track which item had previously one or not
+    const data = Array.isArray(raw) ? raw.map(item => addId(Object.assign({}, item))) : addId(Object.assign({}, raw));
     // We default to automatically add ID to items without but this can be skipped
     const addItemId = (!params.hasOwnProperty('addId') || params.addId)
-    const doOne = item => {
-      return this.getModel().setItem(String(item[this.id]), addItemId ? item : _.omit(item, [this.id]), null)
-        .then(() => addItemId ? item : _.omit(item, [this.id]))
+    const doOne = async (item, indexOrData) => {
+      // Check if initial data had an ID or not
+      const originalItem = (typeof indexOrData === 'object' ? indexOrData : data[indexOrData])
+      const hadId = (originalItem[this.id] !== undefined)
+      return this.getModel().setItem(String(item[this.id]), addItemId || hadId ? item : _.omit(item, [this.id]), null)
+        .then(() => addItemId || hadId ? item : _.omit(item, [this.id]))
         .then(select(params, this.id))
         .then(stringsToDates(this._dates))
         .then(item => {
@@ -262,7 +266,7 @@ class Adapter extends AdapterBase {
         });
     };
 
-    return Array.isArray(data) ? Promise.all(data.map(doOne)) : doOne(data);
+    return Array.isArray(data) ? Promise.all(data.map(doOne)) : doOne(data, raw);
   }
 
   async _patch(id, data, params = {}) {
