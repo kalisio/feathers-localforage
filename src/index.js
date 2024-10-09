@@ -243,14 +243,15 @@ class Adapter extends AdapterBase {
       let thisId = item[this.id];
 
       item[this.id] = thisId !== undefined ? this.setMax(thisId) : ++this._id;
-
+      
       return item;
     };
     const data = Array.isArray(raw) ? raw.map(addId) : addId(Object.assign({}, raw));
-
+    // We default to automatically add ID to items without but this can be skipped
+    const addItemId = (!params.hasOwnProperty('addId') || params.addId)
     const doOne = item => {
-      return this.getModel().setItem(String(item[this.id]), item, null)
-        .then(() => item)
+      return this.getModel().setItem(String(item[this.id]), addItemId ? item : _.omit(item, [this.id]), null)
+        .then(() => addItemId ? item : _.omit(item, [this.id]))
         .then(select(params, this.id))
         .then(stringsToDates(this._dates))
         .then(item => {

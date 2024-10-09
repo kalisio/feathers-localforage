@@ -79,9 +79,9 @@ const testSuite = adapterTests([
 describe('Feathers LocalForage Service', () => {
   const events = ['testing'];
   const app = feathers()
-    .use('/people', service({ events, name: 'test-service-1', storeName: 'test-storage-1', date: false }))
+    .use('/people', service({ events, name: 'test-people-service', storeName: 'test-people-storage', date: false }))
     .use('/people-customid', service({
-      id: 'customid', events, name: 'test-service-2', storeName: 'test-storage-2', date: false
+      id: 'customid', events, name: 'test-people-customid-service', storeName: 'test-people-customid-storage', date: false
     }));
 
   describe('Specific adapter tests', () => {
@@ -97,8 +97,8 @@ describe('Feathers LocalForage Service', () => {
       });
 
       it('throws on name reuse', done => {
-        const name = 'test-service-5';
-        const storeName = 'test-storage-5';
+        const name = 'test-service-1';
+        const storeName = 'test-storage-1';
 
         assert.throws(() => {
           app.use('service1', service({ name, storeName }));
@@ -109,13 +109,13 @@ describe('Feathers LocalForage Service', () => {
       });
 
       it('accepts name reuse with reuseKeys option set', done => {
-        const name = 'test-service-6';
-        const storeName = 'test-storage-6';
+        const name = 'test-service-2';
+        const storeName = 'test-storage-2';
 
         let flag = true;
         try {
-          app.use('service1', service({ name, storeName }));
-          app.use('service2', service({ name, storeName, reuseKeys: true }));
+          app.use('service2', service({ name, storeName }));
+          app.use('service2-reused', service({ name, storeName, reuseKeys: true }));
         } catch (err) {
           flag = false;
         }
@@ -125,8 +125,8 @@ describe('Feathers LocalForage Service', () => {
       });
 
       it('accepts name reuse with reuseKeys option set + contents', async () => {
-        const name = 'test-service-7';
-        const storeName = 'test-storage-7';
+        const name = 'test-service-3';
+        const storeName = 'test-storage-3';
 
         let flag = null;
         app.use('service3', service({ name, storeName }));
@@ -143,8 +143,8 @@ describe('Feathers LocalForage Service', () => {
       });
 
       it('works with default options', () => {
-        app.use('service1', service());
-        const myService = app.service('service1');
+        app.use('service4', service());
+        const myService = app.service('service4');
         return myService.create({ id: 1, name: 'Bond' })
           .catch(err => {
             assert.strictEqual(true, false, `ERROR: ${err.name}, ${err.message}`);
@@ -152,8 +152,8 @@ describe('Feathers LocalForage Service', () => {
       });
 
       it('special debug (_local)', () => {
-        app.use('service2', service({ name: 'service2_local' }));
-        const myService = app.service('service2');
+        app.use('service_local', service({ name: 'service_local' }));
+        const myService = app.service('service_local');
         return myService.create({ id: 1, name: 'Bond' })
           .catch(err => {
             assert.strictEqual(true, false, `ERROR: ${err.name}, ${err.message}`);
@@ -161,18 +161,17 @@ describe('Feathers LocalForage Service', () => {
       });
 
       it('special debug (_queue)', () => {
-        app.use('service3', service({ name: 'service3_queue' }));
-        const myService = app.service('service3');
+        app.use('service_queue', service({ name: 'service_queue' }));
+        const myService = app.service('service_queue');
         return myService.create({ id: 1, name: 'Bond' })
           .catch(err => {
             assert.strictEqual(true, false, `ERROR: ${err.name}, ${err.message}`);
           });
       });
 
-
       it('get unknown id throws', async () => {
-        app.use('service5', service({ name: 'service4' }));
-        const myService = app.service('service4');
+        app.use('service5', service({ name: 'service5' }));
+        const myService = app.service('service5');
         let flag = null;
         try {
           await myService.create({ id: 1, name: 'Bond' })
@@ -184,11 +183,10 @@ describe('Feathers LocalForage Service', () => {
         assert.strictEqual(flag, false, 'Did not throw as expected');
       });
 
-
       it('create with id set', async () => {
-        const name = 'test-storage-8';
+        const name = 'test-storage-6';
         app.use('service6', service({ name }));
-        const myService = app.service('service5');
+        const myService = app.service('service6');
 
         const data = { id: '123', name: 'David', age: 32 };
         let result = {};
@@ -202,6 +200,24 @@ describe('Feathers LocalForage Service', () => {
         assert.strictEqual(result.name, data.name, 'Strange difference on "name"');
         assert.strictEqual(result.age, data.age, 'Strange difference on "age"');
         result = await myService.remove(data.id, {});
+      });
+
+      it('create by skipping id generation', async () => {
+        const name = 'test-storage-7';
+        app.use('service7', service({ name }));
+        const myService = app.service('service7');
+
+        const data = { name: 'David', age: 32 };
+        let result = {};
+        try {
+          result = await myService.create(data, { addId: false });
+        } catch (err) {
+          assert.strictEqual(false, true, `Error creating item without id. err=${err.name}, ${err.message}`);
+        }
+        assert.strictEqual(result.id, data.id, 'Strange difference on "id"');
+        assert.strictEqual(result.name, data.name, 'Strange difference on "name"');
+        assert.strictEqual(result.age, data.age, 'Strange difference on "age"');
+        result = await myService.remove('1', {});
       });
     });
 
