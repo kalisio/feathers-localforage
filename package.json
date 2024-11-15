@@ -1,6 +1,6 @@
 {
   "name": "@kalisio/feathers-localforage",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "A FeathersJS client side service based on localforage that persists to IndexedDB, WebSQL, or LocalStorage",
   "keywords": [
     "feathers",
@@ -14,10 +14,12 @@
     "email": "feathersjs-offline@hillerstrom.name",
     "url": "https://github.com/feathersjs-offline"
   },
-  "contributors": [{
-    "name": "Kalisio contributors",
-    "url": "https://github.com/kalisio"
-  }],
+  "contributors": [
+    {
+      "name": "Kalisio contributors",
+      "url": "https://github.com/kalisio"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/feathersjs-offline/localforage/issues"
   },
