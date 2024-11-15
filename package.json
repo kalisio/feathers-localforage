@@ -14,7 +14,10 @@
     "email": "feathersjs-offline@hillerstrom.name",
     "url": "https://github.com/feathersjs-offline"
   },
-  "contributors": [],
+  "contributors": [{
+    "name": "Kalisio contributors",
+    "url": "https://github.com/kalisio"
+  }],
   "bugs": {
     "url": "https://github.com/feathersjs-offline/localforage/issues"
   },
@@ -29,9 +32,6 @@
   "files": [
     "src"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "funding": {
     "type": "opencollective",
     "url": "https://opencollective.com/feathers"
@@ -46,7 +46,11 @@
   "scripts": {
     "test": "npm run mocha",
     "mocha": "nyc mocha --config ./.mocharc.ts.json --exit  test/*.test.js",
-    "webpack": "parallel-webpack -- --env.home=`pwd`"
+    "webpack": "parallel-webpack -- --env.home=`pwd`",
+    "publish": "git push origin --tags && git push origin",
+    "release:patch": "npm version --force patch && npm publish --access public",
+    "release:minor": "npm version --force minor && npm publish --access public",
+    "release:major": "npm version --force major && npm publish --access public"
   },
   "dependencies": {
     "@feathersjs/adapter-commons": "^5.0.8",
