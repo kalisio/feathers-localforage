@@ -1,20 +1,20 @@
 # \@feathersjs-offline/localforage
 
-[![npm version](https://img.shields.io/npm/v/@feathersjs-offline/localforage.svg?style=flat-square)](https://www.npmjs.com/package/@feathersjs-offline/localforage)
-[![Build Status](https://img.shields.io/github/workflow/status/feathersjs-offline/localforage/CI)](https://github.com/feathersjs-offline/localforage/actions)
-[![Known Vulnerabilities](https://snyk.io/test/github/feathersjs-offline/localforage/badge.svg)](https://snyk.io/test/github/feathersjs-offline/localforage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/29bdb5362c208a740016/maintainability)](https://codeclimate.com/github/feathersjs-offline/localforage/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/29bdb5362c208a740016/test_coverage)](https://codeclimate.com/github/feathersjs-offline/localforage/test_coverage)
-[![Download Status](https://img.shields.io/npm/dm/@feathersjs-offline/localforage)](https://www.npmjs.com/package/@feathersjs-offline/localforage)
+[![Latest Release](https://img.shields.io/github/v/tag/kalisio/feathers-localforage?sort=semver&label=latest)](https://github.com/kalisio/feathers-localforage/releases)
+[![CI](https://github.com/kalisio/feathers-localforage/actions/workflows/main.yaml/badge.svg)](https://github.com/kalisio/feathers-localforage/actions/workflows/main.yaml)
+[![Code Climate](https://codeclimate.com/github/kalisio/feathers-localforage/badges/gpa.svg)](https://codeclimate.com/github/kalisio/feathers-localforage)
+[![Test Coverage](https://codeclimate.com/github/kalisio/feathers-localforage/badges/coverage.svg)](https://codeclimate.com/github/kalisio/feathers-localforage/coverage)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[@featherjs-offline/localforage](https://github.com/feathersjs-offline/localforage/) is a database service adapter wrapping `localForage` that persists to either `IndexedDB`, `WebSQL`, or `LocalStorage` making it very useful for mobile and offline-first applications with the additional ability to seamlessly handle Blobs, TypedArrays, and other JS objects.
+[@kalisio/localforage](https://github.com/kalisio/localforage/) is a database service adapter wrapping `localForage` that persists to either `IndexedDB`, `WebSQL`, or `LocalStorage` making it very useful for mobile and offline-first applications with the additional ability to seamlessly handle Blobs, TypedArrays, and other JS objects.
 
 ```bash
-$ npm install --save @feathersjs-offline/localforage
+$ npm install --save @kalisio/localforage
 ```
 
 > __Important:__ `@feathersjs-offline/localforage` implements the [Feathers Common database adapter API](https://docs.feathersjs.com/api/databases/common.html) and [querying syntax](https://docs.feathersjs.com/api/databases/querying.html).
 
+The changelog of this fork is managed through GitHub [Milestones](https://github.com/kalisio/feathers-localforage/milestones) and related issues.
 
 ## API
 
