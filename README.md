@@ -1,4 +1,4 @@
-# \@feathersjs-offline/localforage
+# \@kalisio/localforage
 
 [![Latest Release](https://img.shields.io/github/v/tag/kalisio/feathers-localforage?sort=semver&label=latest)](https://github.com/kalisio/feathers-localforage/releases)
 [![CI](https://github.com/kalisio/feathers-localforage/actions/workflows/main.yaml/badge.svg)](https://github.com/kalisio/feathers-localforage/actions/workflows/main.yaml)
