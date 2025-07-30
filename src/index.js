@@ -1,12 +1,15 @@
-const { sorter, select, getLimit, AdapterBase } = require('@feathersjs/adapter-commons');
-const { _ } = require('@feathersjs/commons');
-const errors = require('@feathersjs/errors');
-const LocalForage = require('localforage');
-const sift = require('sift').default;
-const stringsToDates = require('./strings-to-dates');
+import { sorter, select, getLimit, AdapterBase } from '@feathersjs/adapter-commons';
+import { _ } from '@feathersjs/commons';
+import errors from '@feathersjs/errors';
+import LocalForage from 'localforage';
+import siftModule from 'sift';
+import makeDebug from 'debug';
+import { stringsToDates } from './strings-to-dates';
 
-const debug = require('debug')('@feathersjs-offline:feathers-localforage');
+export { default as LocalForage } from 'localforage';
 
+const debug = makeDebug('@feathersjs-offline:feathers-localforage');
+const sift = siftModule.default
 const usedKeys = [];
 
 const _select = (data, params, ...args) => {
@@ -351,7 +354,7 @@ class Adapter extends AdapterBase {
 }
 
 // Create the service.
-class Service extends Adapter {
+export class Service extends Adapter {
   constructor(options = {}) {
     super(options);
   }
@@ -381,10 +384,6 @@ class Service extends Adapter {
     return this._remove(id, params)
   }
 }
-function init(options) {
+export default function init(options) {
   return new Service(options);
 };
-
-module.exports = init;
-init.Service = Service;
-init.LocalForage = LocalForage;

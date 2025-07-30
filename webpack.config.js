@@ -55,7 +55,7 @@ function createConfig (lib, dist, name, isProduction = false) {
 }
 
 module.exports = (env) => {
-  let lib = path.resolve(env.home, 'lib') || path.resolve(__dirname, 'lib');
+  let lib = path.resolve(env.home, 'src') || path.resolve(__dirname, 'src');
   let dist = env.dist || path.resolve(__dirname, 'dist')
   return [
     createConfig(lib, dist, 'localforage'),
