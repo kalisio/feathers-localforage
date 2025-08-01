@@ -1,8 +1,7 @@
-const stringsToDatesTest = require('./utilities/strings-to-dates.test');
-const localStorageTest = require('./utilities/local-storage.test');
+import stringsToDatesTest from './utilities/strings-to-dates-test.js';
+import localStorageTest from './utilities/local-storage-test.js';
 
 describe('Utilities verification', () => {
-
   stringsToDatesTest();
   localStorageTest();
 });

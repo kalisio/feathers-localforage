@@ -1,7 +1,8 @@
 // A simple substitution for browsers localStorage - just for test purposes
-const debug = require('debug')('utils:localstorage');
+import makeDebug from 'debug';
+const debug = makeDebug('utils:localstorage');
 
-class LocalStorage {
+export class LocalStorage {
   constructor () {
     this.storage = {};
   }
@@ -53,5 +54,3 @@ class LocalStorage {
     return oldValue;
   }
 }
-
-module.exports = LocalStorage;

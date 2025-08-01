@@ -1,11 +1,10 @@
-const assert = require('assert');
-
-const LocalStorage = require('./local-storage');
+import assert from 'assert';
+import { LocalStorage } from './local-storage.js';
 
 // We don't make `localStorage` global here, as we'r simply testing it locally
 const localStorage = new LocalStorage();
 
-module.exports = () => {
+export default () => {
 
   describe(`LocalStorage simulator`, () => {
 

@@ -1,12 +1,11 @@
-const adapterTests = require('@feathersjs/adapter-tests');
-const errors = require('@feathersjs/errors');
-const feathers = require('@feathersjs/feathers');
-const LocalStorage = require('./utilities/local-storage');
+import adapterTests from '@feathersjs/adapter-tests';
+import errors from '@feathersjs/errors';
+import { feathers } from '@feathersjs/feathers';
+import { LocalStorage } from './utilities/local-storage.js';
+import assert from 'assert';
+import service from '../src/index.js';
+
 global.localStorage = new LocalStorage();
-
-const assert = require('assert');
-
-const service = require('../src');
 
 const testSuite = adapterTests([
   '.options',
@@ -21,25 +20,34 @@ const testSuite = adapterTests([
   '.get + $select',
   '.get + id + query',
   '.get + NotFound',
+  '.get + id + query id',
   '.find',
+  '.find + paginate + query',
   '.remove',
   '.remove + $select',
   '.remove + id + query',
   '.remove + multi',
+  '.remove + multi no pagination',
+  '.remove + id + query id',
+  '.remove + NotFound',
   '.update',
   '.update + $select',
   '.update + id + query',
   '.update + NotFound',
+  '.update + id + query id',
   '.update + query + NotFound',
   '.patch',
   '.patch + $select',
   '.patch + id + query',
   '.patch multiple',
-  '.patch + NotFound',
+  '.patch multiple no pagination',
   '.patch multi query same',
   '.patch multi query changed',
   '.patch + query + NotFound',
+  '.patch + NotFound',
+  '.patch + id + query id',
   '.create',
+  '.create ignores query',
   '.create + $select',
   '.create multi',
   'internal .find',
@@ -57,6 +65,7 @@ const testSuite = adapterTests([
   '.find + $skip',
   '.find + $select',
   '.find + $or',
+  '.find + $and',
   '.find + $in',
   '.find + $nin',
   '.find + $lt',
@@ -66,14 +75,13 @@ const testSuite = adapterTests([
   '.find + $ne',
   '.find + $gt + $lt + $sort',
   '.find + $or nested + $sort',
+  '.find + $and + $or',
   '.find + paginate',
   '.find + paginate + $limit + $skip',
   '.find + paginate + $limit 0',
   '.find + paginate + params',
-  '.get + id + query id',
-  '.remove + id + query id',
-  '.update + id + query id',
-  '.patch + id + query id'
+  'params.adapter + paginate',
+  'params.adapter + multi'
 ]);
 
 describe('Feathers LocalForage Service', () => {
@@ -93,7 +101,7 @@ describe('Feathers LocalForage Service', () => {
       });
 
       it('is CommonJS compatible', () => {
-        assert.strictEqual(typeof require('../src'), 'function');
+        assert.strictEqual(typeof service, 'function');
       });
 
       it('throws on name reuse', done => {

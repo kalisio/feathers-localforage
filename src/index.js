@@ -2,14 +2,13 @@ import { sorter, select, getLimit, AdapterBase } from '@feathersjs/adapter-commo
 import { _ } from '@feathersjs/commons';
 import errors from '@feathersjs/errors';
 import LocalForage from 'localforage';
-import siftModule from 'sift';
+import sift from 'sift';
 import makeDebug from 'debug';
-import { stringsToDates } from './strings-to-dates';
+import { stringsToDates } from './strings-to-dates.js';
 
 export { default as LocalForage } from 'localforage';
 
 const debug = makeDebug('@feathersjs-offline:feathers-localforage');
-const sift = siftModule.default
 const usedKeys = [];
 
 const _select = (data, params, ...args) => {

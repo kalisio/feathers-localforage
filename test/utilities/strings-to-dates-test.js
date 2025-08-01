@@ -1,7 +1,7 @@
-const assert = require('assert');
-const stringsToDates = require('../../src/strings-to-dates');
+import assert from 'assert';
+import { stringsToDates } from '../../src/strings-to-dates.js';
 
-module.exports = () => {
+export default () => {
   describe('toDate verification', () => {
     after(() => {
       console.log(`\n`);
