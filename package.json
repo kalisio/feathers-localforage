@@ -91,5 +91,8 @@
     "vite-plugin-node-polyfills": "^0.24.0",
     "webpack": "^5.10.0",
     "webpack-merge": "^5.5.0"
+  },
+  "resolutions": {
+   "rollup": "npm:@rollup/wasm-node@*"
   }
 }
